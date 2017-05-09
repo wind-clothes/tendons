@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.tendons</groupId>
+	<artifactId>tendons-rpc</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>tendons-core</module>
+		<module>tendons-common</module>
+		<module>tendons-transport</module>
+		<module>tendons-monitor</module>
+		<module>tendons-proxy</module>
+		<module>tendons-registry</module>
+	</modules>
+
+	<name>tendons-parent</name>
+
+	<!-- FIXME change it to the project's website -->
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<jdk.version>1.7</jdk.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+		<org.apache.maven.plugins.maven-compiler-plugin.version>2.3.2
+		</org.apache.maven.plugins.maven-compiler-plugin.version>
+		<org.apache.maven.plugins.maven-resources-plugin.version>2.5
+		</org.apache.maven.plugins.maven-resources-plugin.version>
+		<org.apache.maven.plugins.maven-javadoc-plugin.version>2.7
+		</org.apache.maven.plugins.maven-javadoc-plugin.version>
+		<org.apache.maven.plugins.maven-eclipse-plugin.version>2.8
+		</org.apache.maven.plugins.maven-eclipse-plugin.version>
+		<org.apache.maven.plugins.maven-surefire-plugin.version>2.8.1
+		</org.apache.maven.plugins.maven-surefire-plugin.version>
+		<slf4j.version>1.7.10</slf4j.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- compiler插件参数设置，指定编码 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${org.apache.maven.plugins.maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<!-- resource插件设置，指定字符编码 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${org.apache.maven.plugins.maven-resources-plugin.version}</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<nonFilteredFileExtensions>
+						<nonFilteredFileExtension>key</nonFilteredFileExtension>
+					</nonFilteredFileExtensions>
+				</configuration>
+			</plugin>
+			<!-- javadoc插件，指定字符编码 运行：mvn javadoc:jar生成javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${org.apache.maven.plugins.maven-javadoc-plugin.version}</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<!-- 配置构建时忽略测试用例 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${org.apache.maven.plugins.maven-surefire-plugin.version}</version>
+				<configuration>
+					<skipTests>true</skipTests>
+					<forkMode>once</forkMode>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+
+		</profile>
+	</profiles>
+</project>
