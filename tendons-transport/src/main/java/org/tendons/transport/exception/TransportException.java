@@ -1,6 +1,6 @@
 package org.tendons.transport.exception;
 
-import org.tendons.common.CommonException;
+import org.tendons.common.exception.CommonException;
 
 public class TransportException extends CommonException {
 
@@ -10,15 +10,6 @@ public class TransportException extends CommonException {
     super();
   }
 
-  public TransportException(String message, Throwable cause, boolean enableSuppression,
-      boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-  }
-
-  public TransportException(String message, Throwable cause) {
-    super(message, cause);
-  }
-
   public TransportException(String message) {
     super(message);
   }
@@ -26,5 +17,15 @@ public class TransportException extends CommonException {
   public TransportException(Throwable cause) {
     super(cause);
   }
+
+  public TransportException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public TransportException(String message, Throwable cause, boolean enableSuppression,
+      boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
+
 
 }

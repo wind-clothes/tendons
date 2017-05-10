@@ -1,4 +1,4 @@
-package org.tendons.common;
+package org.tendons.common.exception;
 
 public class CommonException extends RuntimeException {
 
