@@ -1,4 +1,4 @@
-package org.tendons.registry;
+package org.tendons.filter;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

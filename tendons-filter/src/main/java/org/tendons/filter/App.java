@@ -1,4 +1,4 @@
-package org.tendons.proxy;
+package org.tendons.filter;
 
 /**
  * Hello world!

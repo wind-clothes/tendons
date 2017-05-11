@@ -13,6 +13,8 @@
 		<module>tendons-monitor</module>
 		<module>tendons-proxy</module>
 		<module>tendons-registry</module>
+		<module>tendons-filter</module>
+		<module>tendons-manager</module>
 	</modules>
 
 	<name>tendons-parent</name>
