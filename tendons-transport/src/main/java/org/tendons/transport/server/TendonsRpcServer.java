@@ -26,9 +26,19 @@ public class TendonsRpcServer implements RpcServer {
 
   private final static Logger LOGGER = LoggerFactory.getLogger(TendonsRpcServer.class);
 
+  private final TendonsRpcServerConfig config;
+
   private EventLoopGroup bosserGroup;
   private NioEventLoopGroup workerGroup;
-  private TendonsRpcServerConfig config;
+
+  public TendonsRpcServer() {
+    this(new TendonsRpcServerConfig());
+  }
+
+  public TendonsRpcServer(TendonsRpcServerConfig config) {
+    super();
+    this.config = config;
+  }
 
   @Override
   public void start() throws Exception {

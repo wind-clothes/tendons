@@ -21,6 +21,10 @@ public class TendonsRpcServerConfig implements RpcTranspotConfig {
   private final int workerEventLoopsAvailableProcessorsMultiple;
   private final int bossEventLoopsAvailableProcessorsMultiple;
 
+  public TendonsRpcServerConfig() {
+    this(0, 0, 0, 0);
+  }
+
   public TendonsRpcServerConfig(int port, int backlog,
       int workerEventLoopsAvailableProcessorsMultiple,
       int bossEventLoopsAvailableProcessorsMultiple) {
