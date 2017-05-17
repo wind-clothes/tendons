@@ -8,7 +8,7 @@ package org.tendons.common.serialization;
  */
 public interface RpcSerialization {
 
-  void serialize();
+  byte[] serialize(Object object) throws Exception;
 
-  void deserialize();
+  Object deserialize(DeserializeParam param) throws Exception;
 }
