@@ -43,17 +43,22 @@ public class TendonsRpcServer implements RpcServer {
   @Override
   public void start() throws Exception {
     int availableProcessors = Runtime.getRuntime().availableProcessors();
+
     bosserGroup = new NioEventLoopGroup(
         availableProcessors * config.getBossEventLoopsAvailableProcessorsMultiple());
     workerGroup = new NioEventLoopGroup(
         availableProcessors * config.getWorkerEventLoopsAvailableProcessorsMultiple());
+
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     serverBootstrap.group(bosserGroup, workerGroup).channel(NioServerSocketChannel.class)
         .option(ChannelOption.SO_BACKLOG, config.getBacklog())
         .childHandler(new HttpServerInitializer());// 这块后期需要拓展成可配置的，因为后期需要支持其他协议的
+
     Channel channel = serverBootstrap.bind(config.getPort()).sync().channel();
+
     LOGGER.info(String.format("httpServer is start ip:【%s】;port:【%s】",
         InetAddress.getLocalHost().getHostAddress(), config.getPort()));
+
     channel.closeFuture().sync();
   }
 

@@ -1,12 +1,9 @@
 package org.tendons.transport.server.http;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
-import static io.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpResponseStatus.TEMPORARY_REDIRECT;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-
-import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +21,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.util.CharsetUtil;
 
 /**
  * http 协议-处理可读数据
@@ -58,33 +54,30 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpRequest> 
           new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONTINUE), ctx);
       return;
     }
-    // TODO 执行相关请求,重构响应数据
     try {
+      if (msg.decoderResult().isFailure()) {
+        buildReponseFaiure(ctx, BAD_REQUEST);
+        return;
+      }
       final Object result = null;
-
-      buildReponseSuccess(ctx, keepAlive, msg, result);
+      // 解析请求地址和参数并绑定到具体的Service中 TODO
+      buildReponseSuccess(ctx, keepAlive, result);
     } catch (Exception e) {
-      buildReponseFaiure(ctx, msg);
+      LOGGER.info("HttpServerHandler is error,{}", e.getMessage());
+      buildReponseFaiure(ctx, HttpResponseStatus.INTERNAL_SERVER_ERROR);
     }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.info("HttpServerHandler-channelRead0 is end");
     }
   }
 
-  private void buildReponseSuccess(ChannelHandlerContext ctx, boolean keepAlive, HttpRequest msg,
-      Object result) {
-    final FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-        msg.decoderResult().isSuccess() ? OK : BAD_REQUEST,
-        Unpooled.copiedBuffer(Objects.toString(result), CharsetUtil.UTF_8));
+  private void buildReponseSuccess(ChannelHandlerContext ctx, boolean keepAlive, Object result) {
+    final FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, OK,
+        Unpooled.copiedBuffer(buildReponseEntity(result)));
     buildReponseHeaders(keepAlive, response);
     processResponse(keepAlive, response, ctx);
   }
 
-  public void writeResponseOnRedirect(ChannelHandlerContext ctx, String redirectURL) {
-    FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, (TEMPORARY_REDIRECT));
-    response.headers().set(HttpHeaderNames.LOCATION, redirectURL);
-    ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-  }
 
   private void buildReponseHeaders(boolean keepAlive, FullHttpResponse response) {
     if (!response.status().equals(TEMPORARY_REDIRECT)) {
@@ -98,16 +91,46 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpRequest> 
   }
 
 
-  private void buildReponseFaiure(ChannelHandlerContext ctx, HttpRequest msg) {
-    FullHttpResponse response;
-    if (!msg.decoderResult().isSuccess()) {
-      response = new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST,
-          Unpooled.copiedBuffer("params is error", CharsetUtil.UTF_8));
-    } else {
-      response = new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND,
-          Unpooled.copiedBuffer("resources is not found", CharsetUtil.UTF_8));
+  private void buildReponseFaiure(ChannelHandlerContext ctx, HttpResponseStatus statusCode) {
+    FullHttpResponse response = null;
+    switch (statusCode.code()) {
+      case 400:
+        response = new DefaultFullHttpResponse(HTTP_1_1, statusCode,
+            Unpooled.copiedBuffer(buildReponseEntity("params is error")));
+        break;
+      case 404:
+        response = new DefaultFullHttpResponse(HTTP_1_1, statusCode,
+            Unpooled.copiedBuffer(buildReponseEntity("resources is not found")));
+        break;
+      case 500:
+        response = new DefaultFullHttpResponse(HTTP_1_1, statusCode,
+            Unpooled.copiedBuffer(buildReponseEntity("server is error")));
+        break;
+      default:
+        break;
     }
-    processResponse(false, response, ctx);
+    if (response != null) {
+      processResponse(false, response, ctx);
+    }
+  }
+
+  /**
+   * <pre>
+   *  构建各种格式的响应数据：JSON,XML,...
+   * </pre>
+   * 
+   * @Title: buildReponseEntity
+   * @param object
+   * @return byte[]
+   */
+  private byte[] buildReponseEntity(Object object) {
+    return null;
+  }
+
+  public void writeResponseOnRedirect(ChannelHandlerContext ctx, String redirectURL) {
+    FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, (TEMPORARY_REDIRECT));
+    response.headers().set(HttpHeaderNames.LOCATION, redirectURL);
+    ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
   }
 
   private void processResponse(boolean keepAlive, FullHttpResponse response,
