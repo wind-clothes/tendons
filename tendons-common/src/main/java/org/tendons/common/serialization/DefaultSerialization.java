@@ -23,6 +23,7 @@ public class DefaultSerialization<T> implements RpcSerializer<T> {
     try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final ObjectOutputStream objectOutputStream =
             new ObjectOutputStream(byteArrayOutputStream)) {
+
       objectOutputStream.writeObject(object);
       return byteArrayOutputStream.toByteArray();
     }
@@ -32,9 +33,9 @@ public class DefaultSerialization<T> implements RpcSerializer<T> {
   @Override
   public T deserialize(DeserializeParam<T> param) throws Exception {
     Objects.requireNonNull(param, "DefaultSerialization deserialize error: param must is not NULL");
-    try (
-        final ByteArrayInputStream byteArrayInputStream =
-            new ByteArrayInputStream(param.getBytes());
+    try (final ByteArrayInputStream byteArrayInputStream =
+        new ByteArrayInputStream(param.getBytes());
+
         final ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
       return param.getClazz().cast(objectInputStream.readObject());
     }
