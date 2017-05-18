@@ -1,7 +1,8 @@
 package org.tendons.common.serialization;
 
-public class DeserializeParam {
+public class DeserializeParam<T> {
   private String className;
+  private Class<T> clazz;
   private byte[] bytes;
 
   public DeserializeParam(String className, byte[] bytes) {
@@ -23,5 +24,13 @@ public class DeserializeParam {
 
   public void setBytes(byte[] bytes) {
     this.bytes = bytes;
+  }
+
+  public Class<T> getClazz() {
+    return clazz;
+  }
+
+  public void setClazz(Class<T> clazz) {
+    this.clazz = clazz;
   }
 }

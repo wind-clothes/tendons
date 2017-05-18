@@ -14,13 +14,43 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<serialization.kryo.version>4.0.0</serialization.kryo.version><!-- 3.0.3 -->
+		<serialization.protobuf.version>3.0.0</serialization.protobuf.version>
+		<serialization.hessian.version>4.0.33</serialization.hessian.version>
+		<serialization.protostuff.version>1.5.2</serialization.protostuff.version>
+		<test.junit.version>3.8.1</test.junit.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>${test.junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- kryo -->
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>kryo</artifactId>
+			<version>${serialization.kryo.version}</version>
+		</dependency>
+		<!-- protobuf -->
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>${serialization.protobuf.version}</version>
+		</dependency>
+		<!-- hessian -->
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>${serialization.hessian.version}</version>
+		</dependency>
+		<!--protostuff -->
+		<dependency>
+			<groupId>io.protostuff</groupId>
+			<artifactId>protostuff-core</artifactId>
+			<version>${serialization.protostuff.version}</version>
 		</dependency>
 	</dependencies>
 </project>
