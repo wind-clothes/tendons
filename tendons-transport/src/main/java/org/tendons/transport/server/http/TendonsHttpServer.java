@@ -1,4 +1,4 @@
-package org.tendons.transport.server;
+package org.tendons.transport.server.http;
 
 import java.net.InetAddress;
 import java.util.List;
@@ -22,20 +22,20 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * @author: chengweixiong@uworks.cc
  * @date: 2017年5月10日 下午11:00:58
  */
-public class TendonsRpcServer implements RpcServer {
+public class TendonsHttpServer implements RpcServer {
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(TendonsRpcServer.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(TendonsHttpServer.class);
 
   private final TendonsRpcServerConfig config;
 
   private EventLoopGroup bosserGroup;
   private NioEventLoopGroup workerGroup;
 
-  public TendonsRpcServer() {
+  public TendonsHttpServer() {
     this(new TendonsRpcServerConfig());
   }
 
-  public TendonsRpcServer(TendonsRpcServerConfig config) {
+  public TendonsHttpServer(TendonsRpcServerConfig config) {
     super();
     this.config = config;
   }

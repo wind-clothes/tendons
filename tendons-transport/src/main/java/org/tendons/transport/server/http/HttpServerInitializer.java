@@ -1,7 +1,6 @@
-package org.tendons.transport.server;
+package org.tendons.transport.server.http;
 
 import org.tendons.common.protocol.RpcTransportInitializer;
-import org.tendons.transport.server.http.HttpServerHandler;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

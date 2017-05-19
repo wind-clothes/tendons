@@ -52,5 +52,10 @@
 			<artifactId>protostuff-core</artifactId>
 			<version>${serialization.protostuff.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.protostuff</groupId>
+			<artifactId>protostuff-runtime</artifactId>
+			<version>${serialization.protostuff.version}</version>
+		</dependency>
 	</dependencies>
 </project>
