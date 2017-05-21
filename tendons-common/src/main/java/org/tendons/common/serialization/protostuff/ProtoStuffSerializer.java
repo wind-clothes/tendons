@@ -1,41 +1,41 @@
 package org.tendons.common.serialization.protostuff;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.tendons.common.serialization.DeserializeParam;
 import org.tendons.common.serialization.RpcSerializer;
 import org.tendons.common.serialization.contants.Contants;
+import org.tendons.common.serialization.contants.SerializerType;
 
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
 
 /**
  * @author: xiongchengwei
  * @date:2017年5月18日 下午7:48:22
  */
-public class ProtoStuffSerializer<T> implements RpcSerializer<T> {
+public class ProtoStuffSerializer implements RpcSerializer {
 
-  private static Map<Class<?>, RuntimeSchema<?>> cachedSchema =
-      new ConcurrentHashMap<Class<?>, RuntimeSchema<?>>();
+  private final static ConcurrentHashMap<Class<?>, Schema<?>> cachedSchema =
+      new ConcurrentHashMap<Class<?>, Schema<?>>();
 
   @Override
   @SuppressWarnings("unchecked")
-  public byte[] serialize(T object) throws Exception {
-    final RuntimeSchema<T> schema = (RuntimeSchema<T>) getSchema(object.getClass());
+  public <T> byte[] serialize(T object) throws Exception {
+    final Schema<T> schema = (Schema<T>) getSchema(object.getClass());
     final LinkedBuffer buffer = LinkedBuffer.allocate(Contants.SERIALIZER_BUFF_MAX_SIZE);
     try {
       return ProtostuffIOUtil.toByteArray(object, schema, buffer);
     } finally {
-      buffer.clear();
     }
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public T deserialize(DeserializeParam<T> param) throws Exception {
-    RuntimeSchema<T> schema = (RuntimeSchema<T>) getSchema(param.getClazz());
+  public <T> T deserialize(DeserializeParam<T> param) throws Exception {
+    final Schema<T> schema = (Schema<T>) getSchema(param.getClazz());
     T message = null;
     try {
       message = param.getClazz().newInstance();
@@ -46,14 +46,21 @@ public class ProtoStuffSerializer<T> implements RpcSerializer<T> {
     return message;
   }
 
-  private static RuntimeSchema<?> getSchema(Class<?> cls) {
-    RuntimeSchema<?> schema = cachedSchema.get(cls);
+  private static Schema<?> getSchema(Class<?> cls) {
+    Schema<?> schema = cachedSchema.get(cls);
     if (schema == null) {
-      schema = RuntimeSchema.createFrom(cls);
-      if (schema != null) {
-        cachedSchema.put(cls, schema);
+      final Schema<?> newSchema = RuntimeSchema.createFrom(cls);
+      schema = cachedSchema.putIfAbsent(cls, newSchema);
+      // TODO
+      if (schema == null) {
+        schema = cachedSchema.put(cls, newSchema);
       }
     }
     return schema;
+  }
+
+  @Override
+  public SerializerType serializerType() {
+    return SerializerType.PROTO_STUFF;
   }
 }

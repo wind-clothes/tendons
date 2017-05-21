@@ -5,6 +5,7 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import org.tendons.common.serialization.DeserializeParam;
 import org.tendons.common.serialization.RpcSerializer;
 import org.tendons.common.serialization.contants.Contants;
+import org.tendons.common.serialization.contants.SerializerType;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -14,7 +15,7 @@ import com.esotericsoftware.kryo.io.Output;
  * @author: xiongchengwei
  * @date:2017年5月17日 下午1:05:37
  */
-public class KryoSerializer<T> implements RpcSerializer<T> {
+public class KryoSerializer implements RpcSerializer {
 
   private final static ThreadLocal<Kryo> kryos = new ThreadLocal<Kryo>() {
     protected Kryo initialValue() {
@@ -44,16 +45,17 @@ public class KryoSerializer<T> implements RpcSerializer<T> {
   };
 
   @Override
-  public byte[] serialize(T object) {
+  public <T> byte[] serialize(T object) {
     final Kryo kryo = buildNewKryo();
     try (final Output output = new Output(Contants.SERIALIZER_BUFF_MAX_SIZE);) {
       kryo.writeObject(output, object);
+      output.flush();
       return output.toBytes();
     }
   }
 
   @Override
-  public T deserialize(DeserializeParam<T> param) {
+  public <T> T deserialize(DeserializeParam<T> param) {
     final Kryo kryo = buildNewKryo();
     try (final Input input = new Input(param.getBytes())) {
       return kryo.readObject(input, param.getClazz());
@@ -62,5 +64,10 @@ public class KryoSerializer<T> implements RpcSerializer<T> {
 
   private Kryo buildNewKryo() {
     return kryos.get();
+  }
+
+  @Override
+  public SerializerType serializerType() {
+    return SerializerType.KRYO;
   }
 }

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.tendons.common.serialization.DeserializeParam;
 import org.tendons.common.serialization.RpcSerializer;
+import org.tendons.common.serialization.contants.SerializerType;
 
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
@@ -13,14 +14,15 @@ import com.caucho.hessian.io.Hessian2Output;
  * @author: xiongchengwei
  * @date:2017年5月17日 下午1:03:07
  */
-public class HessianSerializer<T> implements RpcSerializer<T> {
+public class HessianSerializer implements RpcSerializer {
 
   @Override
-  public byte[] serialize(T object) throws Exception {
+  public <T> byte[] serialize(T object) throws Exception {
     final Hessian2Output hessian2Output = new Hessian2Output();
     try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();) {
       hessian2Output.init(outputStream);
       hessian2Output.writeObject(object);
+      hessian2Output.flush();
       return outputStream.toByteArray();
     } finally {
       if (hessian2Output != null) {
@@ -30,7 +32,7 @@ public class HessianSerializer<T> implements RpcSerializer<T> {
   }
 
   @Override
-  public T deserialize(DeserializeParam<T> param) throws Exception {
+  public <T> T deserialize(DeserializeParam<T> param) throws Exception {
     final Hessian2Input hessian2Input = new Hessian2Input();
     try (final ByteArrayInputStream inputStream = new ByteArrayInputStream(param.getBytes())) {
       final Object object = hessian2Input.readObject();
@@ -40,6 +42,11 @@ public class HessianSerializer<T> implements RpcSerializer<T> {
         hessian2Input.close();
       }
     }
+  }
+
+  @Override
+  public SerializerType serializerType() {
+    return SerializerType.HESSIAN;
   }
 
 }
