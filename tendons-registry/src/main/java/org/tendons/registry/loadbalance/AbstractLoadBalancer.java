@@ -10,8 +10,7 @@ import org.tendons.common.RequestWrapper;
  */
 public abstract class AbstractLoadBalancer implements LoadBalancer {
 
-  public <T> ServiceProvider<T> selected(List<ServiceProvider<T>> serviceProviders,
-      RequestWrapper request) {
+  public <T> ServiceProvider<T> selected(List<ServiceProvider<T>> serviceProviders, RequestWrapper request) {
     if (serviceProviders == null || serviceProviders.size() == 0) {
       return null;
     }
@@ -54,8 +53,7 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
    * 
    * @return boolean
    */
-  protected <E> WeightWrapper sameWeight(List<ServiceProvider<E>> serviceProviders,
-      RequestWrapper request) {
+  protected <E> WeightWrapper sameWeight(List<ServiceProvider<E>> serviceProviders, RequestWrapper request) {
     final WeightWrapper weightWrapper = new WeightWrapper();
     if (serviceProviders == null || serviceProviders.isEmpty()) {
       return weightWrapper;
@@ -75,5 +73,9 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
     weightWrapper.setSameWight(sameWeight);
     weightWrapper.setSumWeight(sumWeight);
     return weightWrapper;
+  }
+
+  protected <E> String buildKey(List<ServiceProvider<E>> serviceProviders) {
+    return serviceProviders.get(0).getServiceName();
   }
 }

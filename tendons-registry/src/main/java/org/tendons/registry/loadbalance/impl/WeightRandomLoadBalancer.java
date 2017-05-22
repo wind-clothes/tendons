@@ -27,7 +27,7 @@ public class WeightRandomLoadBalancer extends AbstractLoadBalancer {
     final int maxSize = serviceProviders.size();
     final WeightWrapper weightWrapper = sameWeight(serviceProviders, request);
 
-    // 如果总的全总不为0 并且权重有不一样的，则按总的权重来计算 TODO
+    // 如果总的全总不为0 并且权重有不一样的，则按总的权重来计算 
     if (weightWrapper.getSumWeight() > 0 && !weightWrapper.getSameWight()) {
       int offset = RandomUtil.random(weightWrapper.getSumWeight());
       for (int i = 0; i < maxSize; i++) {

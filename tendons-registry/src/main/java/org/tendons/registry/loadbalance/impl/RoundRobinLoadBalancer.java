@@ -27,7 +27,7 @@ public class RoundRobinLoadBalancer extends AbstractLoadBalancer {
   @Override
   protected <T> ServiceProvider<T> doSelected(List<ServiceProvider<T>> serviceProviders,
       RequestWrapper request) {
-    final String serviceName = serviceProviders.get(0).getServiceName();
+    final String serviceName = buildKey(serviceProviders);
     final int maxSize = serviceProviders.size();
     AtomicNativeInteger sequence = roundRobinService.get(serviceName);
     if (sequence == null) {

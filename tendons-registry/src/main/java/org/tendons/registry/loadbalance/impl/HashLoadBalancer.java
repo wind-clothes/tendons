@@ -1,9 +1,5 @@
 package org.tendons.registry.loadbalance.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -14,6 +10,7 @@ import org.tendons.common.RequestWrapper;
 import org.tendons.common.util.DigestHashUtil;
 import org.tendons.registry.loadbalance.AbstractLoadBalancer;
 import org.tendons.registry.loadbalance.ServiceProvider;
+import org.tendons.registry.loadbalance.ServiceProviderEntity;
 
 /**
  * <pre>
@@ -22,6 +19,7 @@ import org.tendons.registry.loadbalance.ServiceProvider;
  * 用该数值对服务器列表的大小进行取模运算，得到的结果便是客户端要访问的服务器的序号。
  * 采用源地址哈希法进行负载均衡，同一IP地址的客户端，当后端服务器列表不变时，
  * 它每次都会映射到同一台后端服务器进行访问
+ * TODO
  * </pre>
  * 
  * @author: chengweixiong@uworks.cc
@@ -29,51 +27,59 @@ import org.tendons.registry.loadbalance.ServiceProvider;
  */
 public class HashLoadBalancer extends AbstractLoadBalancer {
 
+  // 通过 serviceName作为key值得一致性hash环
   private final ConcurrentMap<String, ConsistentHashSelector<?>> selectors =
       new ConcurrentHashMap<String, ConsistentHashSelector<?>>();
 
   @SuppressWarnings("unchecked")
   @Override
-  protected <T> ServiceProvider<T> doSelected(List<ServiceProvider<T>> serviceProviders,
-      RequestWrapper request) {
-    String key = serviceProviders.get(0).getServiceName();
-    int identityHashCode = System.identityHashCode(serviceProviders);
+  protected <T> ServiceProvider<T> doSelected(List<ServiceProvider<T>> serviceProviders, RequestWrapper request) {
+    final String key = serviceProviders.get(0).getServiceName();
+    final int identityHashCode = System.identityHashCode(serviceProviders);
+
     ConsistentHashSelector<T> selector = (ConsistentHashSelector<T>) selectors.get(key);
     if (selector == null || selector.getIdentityHashCode() != identityHashCode) {
       selectors.put(key, new ConsistentHashSelector<T>(serviceProviders, null, identityHashCode));
       selector = (ConsistentHashSelector<T>) selectors.get(key);
     }
-    return selector.select(null);
+    return selector.select(request);
   }
 
+  /**
+   * 一致性Hash算法，hash环
+   * 
+   * @author: xcw
+   * @date:2017年5月22日 上午11:09:01
+   */
   private static final class ConsistentHashSelector<T> {
 
-    private final TreeMap<Long, ServiceProvider<T>> virtualInvokers;
+    private final TreeMap<Long, ServiceProvider<T>> virtualServiceProviders;
 
-    private final int replicaNumber;
+    private final int replicaNumber;// 复制的实例数量
 
-    private final int identityHashCode;
+    private final int identityHashCode;// 自定义的hashCode
 
-    private final int[] argumentIndex;
+    private final int[] argumentIndex;// 参数索引值
 
-    public ConsistentHashSelector(List<ServiceProvider<T>> invokers, String methodName,
-        int identityHashCode) {
-      this.virtualInvokers = new TreeMap<Long, ServiceProvider<T>>();
-      this.identityHashCode = System.identityHashCode(invokers);
-      URL url = invokers.get(0).getUrl();
-      this.replicaNumber = url.getMethodParameter(methodName, "hash.nodes", 160);
-      String[] index = Constants.COMMA_SPLIT_PATTERN
-          .split(url.getMethodParameter(methodName, "hash.arguments", "0"));
+    public ConsistentHashSelector(List<ServiceProvider<T>> serviceProviders, String methodName, int identityHashCode) {
+      this.virtualServiceProviders = new TreeMap<Long, ServiceProvider<T>>();
+      this.identityHashCode = System.identityHashCode(serviceProviders);
+      // replicaNumber
+      ServiceProviderEntity entity = serviceProviders.get(0).getEntity();
+      this.replicaNumber = entity.getReplicaNumber();
+      // hash.arguments
+      final String[] index = {};
+
       argumentIndex = new int[index.length];
       for (int i = 0; i < index.length; i++) {
         argumentIndex[i] = Integer.parseInt(index[i]);
       }
-      for (ServiceProvider<T> invoker : invokers) {
+      for (ServiceProvider<T> provider : serviceProviders) {
         for (int i = 0; i < replicaNumber / 4; i++) {
-          byte[] digest = md5(invoker.getUrl().toFullString() + i);
+          final byte[] digest = DigestHashUtil.md5(provider.getEntity().toString() + i);
           for (int h = 0; h < 4; h++) {
-            long m = hash(digest, h);
-            virtualInvokers.put(m, invoker);
+            final long m = hash(digest, h);
+            virtualServiceProviders.put(m, provider);
           }
         }
       }
@@ -84,14 +90,14 @@ public class HashLoadBalancer extends AbstractLoadBalancer {
     }
 
     public ServiceProvider<T> select(RequestWrapper requestWrapper) {
-      String key = toKey(requestWrapper.getArguments());
-      byte[] digest = DigestHashUtil.md5(key);
-      ServiceProvider<T> invoker = sekectForKey(hash(digest, 0));
+      final String key = toKey(requestWrapper.getArguments());
+      final byte[] digest = DigestHashUtil.md5(key);
+      final ServiceProvider<T> invoker = sekectForKey(hash(digest, 0));
       return invoker;
     }
 
     private String toKey(Object[] args) {
-      StringBuilder buf = new StringBuilder();
+      final StringBuilder buf = new StringBuilder();
       for (int i : argumentIndex) {
         if (i >= 0 && i < args.length) {
           buf.append(args[i]);
@@ -101,27 +107,24 @@ public class HashLoadBalancer extends AbstractLoadBalancer {
     }
 
     private ServiceProvider<T> sekectForKey(long hash) {
-      ServiceProvider<T> invoker;
+      ServiceProvider<T> serviceProvider;
       Long key = hash;
-      if (!virtualInvokers.containsKey(key)) {
-        SortedMap<Long, ServiceProvider<T>> tailMap = virtualInvokers.tailMap(key);
+      if (!virtualServiceProviders.containsKey(key)) {
+        final SortedMap<Long, ServiceProvider<T>> tailMap = virtualServiceProviders.tailMap(key);
         if (tailMap.isEmpty()) {
-          key = virtualInvokers.firstKey();
+          key = virtualServiceProviders.firstKey();
         } else {
           key = tailMap.firstKey();
         }
       }
-      invoker = virtualInvokers.get(key);
-      return invoker;
+      serviceProvider = virtualServiceProviders.get(key);
+      return serviceProvider;
     }
 
     private long hash(byte[] digest, int number) {
-      return (((long) (digest[3 + number * 4] & 0xFF) << 24)
-          | ((long) (digest[2 + number * 4] & 0xFF) << 16)
-          | ((long) (digest[1 + number * 4] & 0xFF) << 8) | (digest[0 + number * 4] & 0xFF))
-          & 0xFFFFFFFFL;
+      return (((long) (digest[3 + number * 4] & 0xFF) << 24) | ((long) (digest[2 + number * 4] & 0xFF) << 16)
+          | ((long) (digest[1 + number * 4] & 0xFF) << 8) | (digest[0 + number * 4] & 0xFF)) & 0xFFFFFFFFL;
     }
-
   }
 
 }

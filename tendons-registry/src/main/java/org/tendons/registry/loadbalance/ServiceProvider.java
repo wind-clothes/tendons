@@ -1,5 +1,7 @@
 package org.tendons.registry.loadbalance;
 
+import java.net.URL;
+
 /**
  * @author: chengweixiong@uworks.cc
  * @date: 2017年5月21日 下午7:17:26
@@ -14,6 +16,8 @@ public final class ServiceProvider<T> {
   private int warmUp;
   // 时间戳，发布的时间
   private long timestamp;
+
+  private ServiceProviderEntity entity = new ServiceProviderEntity();
 
   public T getObj() {
     return obj;
@@ -54,5 +58,14 @@ public final class ServiceProvider<T> {
   public void setServiceName(String serviceName) {
     this.serviceName = serviceName;
   }
+
+  public ServiceProviderEntity getEntity() {
+    return entity;
+  }
+
+  public void setEntity(ServiceProviderEntity entity) {
+    this.entity = entity;
+  }
+
 
 }
