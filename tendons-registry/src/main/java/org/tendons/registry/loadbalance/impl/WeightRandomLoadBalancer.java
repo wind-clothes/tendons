@@ -2,7 +2,7 @@ package org.tendons.registry.loadbalance.impl;
 
 import java.util.List;
 
-import org.tendons.common.RequestWrapper;
+import org.tendons.common.request.RequestWrapper;
 import org.tendons.common.util.RandomUtil;
 import org.tendons.registry.loadbalance.AbstractLoadBalancer;
 import org.tendons.registry.loadbalance.ServiceProvider;
@@ -38,5 +38,32 @@ public class WeightRandomLoadBalancer extends AbstractLoadBalancer {
       }
     }
     return serviceProviders.get(RandomUtil.random(maxSize));
+  }
+
+  /**
+   * 计算权重是否是相同的
+   * 
+   * @return boolean
+   */
+  private <E> WeightWrapper sameWeight(List<ServiceProvider<E>> serviceProviders, RequestWrapper request) {
+    final WeightWrapper weightWrapper = new WeightWrapper();
+    if (serviceProviders == null || serviceProviders.isEmpty()) {
+      return weightWrapper;
+    }
+
+    final int size = serviceProviders.size();
+    boolean sameWeight = true;
+    int sumWeight = 0;
+    for (int i = 0; i < size; i++) {
+      final int weight = getWeight(serviceProviders.get(i), request);
+      sumWeight += weight;
+      if (sameWeight && i > 0 && weight != getWeight(serviceProviders.get(i - 1), request)) {
+        sameWeight = false;
+        break;
+      }
+    }
+    weightWrapper.setSameWight(sameWeight);
+    weightWrapper.setSumWeight(sumWeight);
+    return weightWrapper;
   }
 }

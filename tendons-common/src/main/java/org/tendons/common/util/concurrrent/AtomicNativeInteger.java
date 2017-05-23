@@ -1,4 +1,4 @@
-package org.tendons.common.util;
+package org.tendons.common.util.concurrrent;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

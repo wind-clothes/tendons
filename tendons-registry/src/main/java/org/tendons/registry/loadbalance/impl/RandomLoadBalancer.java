@@ -2,7 +2,7 @@ package org.tendons.registry.loadbalance.impl;
 
 import java.util.List;
 
-import org.tendons.common.RequestWrapper;
+import org.tendons.common.request.RequestWrapper;
 import org.tendons.common.util.RandomUtil;
 import org.tendons.registry.loadbalance.AbstractLoadBalancer;
 import org.tendons.registry.loadbalance.ServiceProvider;

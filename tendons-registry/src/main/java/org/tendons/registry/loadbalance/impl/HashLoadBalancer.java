@@ -6,7 +6,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.tendons.common.RequestWrapper;
+import org.tendons.common.request.RequestWrapper;
 import org.tendons.common.util.DigestHashUtil;
 import org.tendons.registry.loadbalance.AbstractLoadBalancer;
 import org.tendons.registry.loadbalance.ServiceProvider;
@@ -39,7 +39,7 @@ public class HashLoadBalancer extends AbstractLoadBalancer {
 
     ConsistentHashSelector<T> selector = (ConsistentHashSelector<T>) selectors.get(key);
     if (selector == null || selector.getIdentityHashCode() != identityHashCode) {
-      selectors.put(key, new ConsistentHashSelector<T>(serviceProviders, null, identityHashCode));
+      selectors.put(key, new ConsistentHashSelector<T>(serviceProviders, identityHashCode));
       selector = (ConsistentHashSelector<T>) selectors.get(key);
     }
     return selector.select(request);
@@ -53,27 +53,35 @@ public class HashLoadBalancer extends AbstractLoadBalancer {
    */
   private static final class ConsistentHashSelector<T> {
 
+    /**
+     * 虚拟节点
+     */
     private final TreeMap<Long, ServiceProvider<T>> virtualServiceProviders;
 
-    private final int replicaNumber;// 复制的实例数量
+    /**
+     * 設置的虛擬節點的個數
+     */
+    private final int replicaNumber;
 
-    private final int identityHashCode;// 自定义的hashCode
+    /**
+     * 自定义的hashCode
+     */
+    private final int identityHashCode;
 
-    private final int[] argumentIndex;// 参数索引值
+    /**
+     * 参数索引值
+     */
+    //private final int[] argumentIndex;
 
-    public ConsistentHashSelector(List<ServiceProvider<T>> serviceProviders, String methodName, int identityHashCode) {
+    public ConsistentHashSelector(List<ServiceProvider<T>> serviceProviders, int identityHashCode) {
       this.virtualServiceProviders = new TreeMap<Long, ServiceProvider<T>>();
       this.identityHashCode = System.identityHashCode(serviceProviders);
-      // replicaNumber
+
       ServiceProviderEntity entity = serviceProviders.get(0).getEntity();
       this.replicaNumber = entity.getReplicaNumber();
-      // hash.arguments
-      final String[] index = {};
 
-      argumentIndex = new int[index.length];
-      for (int i = 0; i < index.length; i++) {
-        argumentIndex[i] = Integer.parseInt(index[i]);
-      }
+      // 将hash环分为四块，然后每个区域内，都再分为4块，然后每一块都有一个实例
+      // 一個實例有replicaNumber节点，作为其虚拟节点。
       for (ServiceProvider<T> provider : serviceProviders) {
         for (int i = 0; i < replicaNumber / 4; i++) {
           final byte[] digest = DigestHashUtil.md5(provider.getEntity().toString() + i);
@@ -98,10 +106,8 @@ public class HashLoadBalancer extends AbstractLoadBalancer {
 
     private String toKey(Object[] args) {
       final StringBuilder buf = new StringBuilder();
-      for (int i : argumentIndex) {
-        if (i >= 0 && i < args.length) {
-          buf.append(args[i]);
-        }
+      for (Object object : args) {
+        buf.append(object);
       }
       return buf.toString();
     }

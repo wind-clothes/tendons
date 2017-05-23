@@ -3,8 +3,8 @@ package org.tendons.registry.loadbalance.impl;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.tendons.common.RequestWrapper;
-import org.tendons.common.util.AtomicNativeInteger;
+import org.tendons.common.request.RequestWrapper;
+import org.tendons.common.util.concurrrent.AtomicNativeInteger;
 import org.tendons.registry.loadbalance.AbstractLoadBalancer;
 import org.tendons.registry.loadbalance.ServiceProvider;
 
