@@ -2,7 +2,6 @@ package org.tendons.common.serialization.contants;
 
 /**
  * @ClassName: SerializerType
- * @Description: TODO
  * @author: xiongchengwei
  * @date:2017年5月18日 上午10:59:40
  */
@@ -44,6 +43,6 @@ public enum SerializerType {
   }
 
   public static SerializerType getDefault() {
-    return PROTO_STUFF;
+    return KRYO;
   }
 }

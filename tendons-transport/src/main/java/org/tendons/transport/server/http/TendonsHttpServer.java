@@ -1,13 +1,11 @@
 package org.tendons.transport.server.http;
 
 import java.net.InetAddress;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tendons.common.server.RpcServer;
-import org.tendons.common.service.ServiceWrapper;
-import org.tendons.transport.config.TendonsRpcServerConfig;
+import org.tendons.transport.config.TendonsHttpServerConfig;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -26,16 +24,16 @@ public class TendonsHttpServer implements RpcServer {
 
   private final static Logger LOGGER = LoggerFactory.getLogger(TendonsHttpServer.class);
 
-  private final TendonsRpcServerConfig config;
+  private final TendonsHttpServerConfig config;
 
   private EventLoopGroup bosserGroup;
-  private NioEventLoopGroup workerGroup;
+  private EventLoopGroup workerGroup;
 
   public TendonsHttpServer() {
-    this(new TendonsRpcServerConfig());
+    this(new TendonsHttpServerConfig());
   }
 
-  public TendonsHttpServer(TendonsRpcServerConfig config) {
+  public TendonsHttpServer(TendonsHttpServerConfig config) {
     super();
     this.config = config;
   }
@@ -66,42 +64,6 @@ public class TendonsHttpServer implements RpcServer {
   public void stop() {
     bosserGroup.shutdownGracefully();
     workerGroup.shutdownGracefully();
-  }
-
-  @Override
-  public void publishAll() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void unpublish(ServiceWrapper serviceWrapper) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void unpublishAll() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public List<ServiceWrapper> allRegisteredServices() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void publish(ServiceWrapper serviceWrapper) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void publish(ServiceWrapper... serviceWrappers) {
-    // TODO Auto-generated method stub
-
   }
 
 }
