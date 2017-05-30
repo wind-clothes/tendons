@@ -7,10 +7,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
+ * <pre>
+ * tcp请求处理器 TODO
+ * </pre>
+ * 
  * @author: xcw
- * @date:2017年5月23日 下午8:23:11 
+ * @date:2017年5月23日 下午8:23:11
  */
-public class TendonsRpcServerHandler extends SimpleChannelInboundHandler<Object>{
+public class TendonsRpcServerHandler extends SimpleChannelInboundHandler<Object> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TendonsRpcServerHandler.class);
 
@@ -19,4 +23,9 @@ public class TendonsRpcServerHandler extends SimpleChannelInboundHandler<Object>
     LOGGER.info("start");
   }
 
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    super.exceptionCaught(ctx, cause);
+    ctx.channel().close();
+  }
 }

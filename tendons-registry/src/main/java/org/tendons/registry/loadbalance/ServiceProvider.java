@@ -1,7 +1,5 @@
 package org.tendons.registry.loadbalance;
 
-import java.net.URL;
-
 /**
  * @author: chengweixiong@uworks.cc
  * @date: 2017年5月21日 下午7:17:26
@@ -66,6 +64,4 @@ public final class ServiceProvider<T> {
   public void setEntity(ServiceProviderEntity entity) {
     this.entity = entity;
   }
-
-
 }

@@ -11,7 +11,6 @@ import org.tendons.transport.config.TendonsTcpServerConfig;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.UnpooledByteBufAllocator;
-import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -51,14 +50,14 @@ public class TendonsRpcServer implements RpcServer {
         .childHandler(new TendonsRpcServerInitializer());
     bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeOut())
         .option(ChannelOption.SO_BACKLOG, config.getBacklog())
-        // .option(ChannelOption.SO_REUSEADDR, reusePort)//disable this on windows, open it on linux
-        .option(ChannelOption.RCVBUF_ALLOCATOR, AdaptiveRecvByteBufAllocator.DEFAULT)
+        .option(ChannelOption.SO_REUSEADDR, true) // disable this on windows, open it on linux
+        .option(ChannelOption.TCP_NODELAY, config.isTcpNnodelay())
         .childOption(ChannelOption.SO_KEEPALIVE, config.isKeepLive())
-        .childOption(ChannelOption.TCP_NODELAY, config.isTcpNnodelay())
-        .childOption(ChannelOption.ALLOCATOR, new UnpooledByteBufAllocator(false))// 是否开启读写缓冲区大小的动态调整
+        .option(ChannelOption.ALLOCATOR, new UnpooledByteBufAllocator(false))// 是否开启读写缓冲区大小的动态调整
         .childOption(ChannelOption.SO_RCVBUF, 8192 * 128)// 读入的缓存默认大小
         .childOption(ChannelOption.SO_SNDBUF, 8192 * 128);// 写出的缓存的默认大小
-    final ChannelFuture channelFuture = bootstrap.bind(new InetSocketAddress(config.getPort())).sync();
+    final ChannelFuture channelFuture =
+        bootstrap.bind(new InetSocketAddress(config.getPort())).sync();
     final Channel channel = channelFuture.channel();
     channel.closeFuture().sync();
     LOGGER.info("tendons rpc tcp server is start");

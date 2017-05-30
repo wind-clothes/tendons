@@ -1,6 +1,7 @@
-package org.tendons.registry;
+package org.tendons.common.service;
 
 /**
+ * TODO
  * @author: chengweixiong@uworks.cc
  * @date: 2017年5月21日 下午2:05:45
  */
@@ -11,7 +12,7 @@ public class ServiceEntity {
   private ServiceMeta serviceMeta = new ServiceMeta();
   // 权重 hashCode() 与 equals() 不把weight计算在内
   private volatile int weight;
-  // 建议连接数, jupiter客户端会根据connCount的值去建立对应数量的连接, hashCode() 与 equals() 不把connCount计算在内
+
   private volatile int connCount;
 
   public String getHost() {

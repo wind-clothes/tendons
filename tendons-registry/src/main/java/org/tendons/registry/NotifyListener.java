@@ -1,5 +1,9 @@
 package org.tendons.registry;
 
+import java.util.List;
+
+import org.tendons.common.service.RegisterServiceUrl;
+
 /**
  * <pre>
  * 与服务注册中心的通知监听
@@ -10,7 +14,7 @@ package org.tendons.registry;
  */
 public interface NotifyListener {
 
-  void notify(ServiceEntity serviceEntity, NotifyEvent event);
+  void notify(List<RegisterServiceUrl> serviceUrls, NotifyEvent event);
 
   enum NotifyEvent {
     CHILD_ADDED, CHILD_REMOVED
