@@ -11,7 +11,7 @@ import org.tendons.monitor.Monitor;
 public class TendonsMonitorFactory extends AbstractMonitorFactory {
 
   @Override
-  public Monitor getMonitor(RegisterServiceUrl serviceUrl) {
+  protected Monitor createMonitor(RegisterServiceUrl url) {
     return null;
   }
 

@@ -30,4 +30,19 @@ public class RegisterServiceUrl {
     return null;
   }
 
+  public String toServiceString() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public RegisterServiceUrl setPath(String name) {
+    // TODO Auto-generated method stub
+    return this;
+  }
+
+  public RegisterServiceUrl addParameter(String interfaceKey, String name) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

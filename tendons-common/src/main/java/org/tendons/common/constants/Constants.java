@@ -8,4 +8,6 @@ public final class Constants {
 
   public static final String OUTPUT_KEY = "output";
 
+  public static final String INTERFACE_KEY = "interface";
+
 }
