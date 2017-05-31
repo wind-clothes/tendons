@@ -1,4 +1,4 @@
-package org.tendons.registry;
+package org.tendons.registry.service;
 
 import java.util.List;
 
