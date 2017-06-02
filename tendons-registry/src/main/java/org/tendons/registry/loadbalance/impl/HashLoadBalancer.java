@@ -62,7 +62,7 @@ public class HashLoadBalancer extends AbstractLoadBalancer {
      * 設置的虛擬節點的個數
      */
     private final int replicaNumber;
-
+ 
     /**
      * 自定义的hashCode
      */
