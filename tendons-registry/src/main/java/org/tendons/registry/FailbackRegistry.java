@@ -3,6 +3,7 @@ package org.tendons.registry;
 import java.util.List;
 
 import org.tendons.common.service.RegisterServiceUrl;
+import org.tendons.registry.service.NotifyListener;
 
 /**
  * @author: chengweixiong@uworks.cc

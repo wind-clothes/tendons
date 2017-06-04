@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tendons.common.service.RegisterServiceUrl;
 import org.tendons.registry.AbstractRegistry;
-import org.tendons.registry.NotifyListener;
 import org.tendons.registry.RegistryCenterConfig;
+import org.tendons.registry.service.NotifyListener;
 import org.tendons.registry.zookeeper.client.ZookeeperClient;
 import org.tendons.registry.zookeeper.client.ZookeeperClientFactory;
 
@@ -28,6 +28,7 @@ public class ZookeeperRegistry extends AbstractRegistry {
   @Override
   public void doClose() {
     client.close();
+    LOGGER.info("ZookeeperRegistry is close");
   }
 
   @Override
