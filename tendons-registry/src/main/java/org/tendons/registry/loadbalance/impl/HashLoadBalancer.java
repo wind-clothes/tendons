@@ -132,5 +132,4 @@ public class HashLoadBalancer extends AbstractLoadBalancer {
           | ((long) (digest[1 + number * 4] & 0xFF) << 8) | (digest[0 + number * 4] & 0xFF)) & 0xFFFFFFFFL;
     }
   }
-
 }

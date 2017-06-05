@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <pre>
- * 自定义的整型原子类，封装了{@link AtomicInteger} TODO
+ * 自定义的整型原子类，封装了{@link AtomicInteger}
  * </pre>
  * 
  * @author: chengweixiong@uworks.cc

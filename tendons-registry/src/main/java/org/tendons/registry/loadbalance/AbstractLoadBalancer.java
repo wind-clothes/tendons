@@ -49,6 +49,11 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
   }
 
 
+  /**
+   * 获得服务的唯一key值 TODO
+   * @param serviceProviders
+   * @return String
+   */
   protected <E> String buildKey(List<ServiceProvider<E>> serviceProviders) {
     return serviceProviders.get(0).getServiceName();
   }

@@ -29,6 +29,7 @@ public class ProtoStuffSerializer implements RpcSerializer {
     try {
       return ProtostuffIOUtil.toByteArray(object, schema, buffer);
     } finally {
+      // do something
     }
   }
 

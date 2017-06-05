@@ -48,5 +48,4 @@ public class HessianSerializer implements RpcSerializer {
   public SerializerType serializerType() {
     return SerializerType.HESSIAN;
   }
-
 }
