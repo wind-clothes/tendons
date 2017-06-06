@@ -17,6 +17,9 @@ public abstract class AbstractMonitorFactory implements MonitorFactory {
 
   private static final ReentrantLock LOCK = new ReentrantLock();
 
+  /**
+   * 一个服务一个监视器
+   */
   private static final Map<String, Monitor> MONITORS = new ConcurrentHashMap<String, Monitor>();
 
   public static Collection<Monitor> getMonitors() {

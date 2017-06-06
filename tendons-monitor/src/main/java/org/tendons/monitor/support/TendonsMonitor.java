@@ -37,6 +37,7 @@ public class TendonsMonitor implements Monitor {
 
   private final Invoker<MonitorService> monitorInvoker;
 
+  // 远程的RPC服务,用来发送监控信息
   private final MonitorService monitorService;
 
   private final long monitorInterval;
@@ -114,6 +115,7 @@ public class TendonsMonitor implements Monitor {
     }
   }
 
+  @Override
   public void collect(RegisterServiceUrl serviceUrl) {
     // 读写统计变量
     int success = serviceUrl.getParameter(MonitorService.SUCCESS, 0);

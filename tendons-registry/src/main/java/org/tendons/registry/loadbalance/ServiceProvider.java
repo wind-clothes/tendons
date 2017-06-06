@@ -64,4 +64,38 @@ public final class ServiceProvider<T> {
   public void setEntity(ServiceProviderEntity entity) {
     this.entity = entity;
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((entity == null) ? 0 : entity.hashCode());
+    result = prime * result + ((obj == null) ? 0 : obj.hashCode());
+    result = prime * result + ((serviceName == null) ? 0 : serviceName.hashCode());
+    result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
+    result = prime * result + warmUp;
+    result = prime * result + weight;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    ServiceProvider other = (ServiceProvider) obj;
+    if (entity == null) {
+      if (other.entity != null) return false;
+    } else if (!entity.equals(other.entity)) return false;
+    if (this.obj == null) {
+      if (other.obj != null) return false;
+    } else if (!this.obj.equals(other.obj)) return false;
+    if (serviceName == null) {
+      if (other.serviceName != null) return false;
+    } else if (!serviceName.equals(other.serviceName)) return false;
+    if (timestamp != other.timestamp) return false;
+    if (warmUp != other.warmUp) return false;
+    if (weight != other.weight) return false;
+    return true;
+  }
 }
