@@ -24,7 +24,7 @@ import org.tendons.monitor.ServiceStatistics;
  */
 public class TendonsMonitor implements Monitor {
 
-  private static final Logger logger = LoggerFactory.getLogger(TendonsMonitor.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TendonsMonitor.class);
 
   private static final int LENGTH = 10;
 
@@ -35,8 +35,6 @@ public class TendonsMonitor implements Monitor {
   // 统计信息收集定时器
   private final ScheduledFuture<?> sendFuture;
 
-  private final Invoker<MonitorService> monitorInvoker;
-
   // 远程的RPC服务,用来发送监控信息
   private final MonitorService monitorService;
 
@@ -45,10 +43,9 @@ public class TendonsMonitor implements Monitor {
   private final ConcurrentMap<ServiceStatistics, AtomicReference<long[]>> statisticsMap =
       new ConcurrentHashMap<ServiceStatistics, AtomicReference<long[]>>();
 
-  public TendonsMonitor(Invoker<MonitorService> monitorInvoker, MonitorService monitorService) {
-    this.monitorInvoker = monitorInvoker;
+  public TendonsMonitor(MonitorService monitorService) {
     this.monitorService = monitorService;
-    this.monitorInterval = monitorInvoker.getUrl().getPositiveParameter("interval", 60000);
+    this.monitorInterval = 60000;
     // 启动统计信息收集定时器
     sendFuture = scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
       public void run() {
@@ -56,7 +53,7 @@ public class TendonsMonitor implements Monitor {
         try {
           send();
         } catch (Throwable t) { // 防御性容错
-          logger.error("Unexpected error occur at send statistic, cause: " + t.getMessage(), t);
+          LOGGER.error("Unexpected error occur at send statistic, cause: " + t.getMessage(), t);
         }
       }
     }, monitorInterval, monitorInterval, TimeUnit.MILLISECONDS);
@@ -131,7 +128,7 @@ public class TendonsMonitor implements Monitor {
       statisticsMap.putIfAbsent(statistics, new AtomicReference<long[]>());
       reference = statisticsMap.get(statistics);
     }
-    // CompareAndSet并发加入统计数据
+    // 并发加入统计数据
     long[] current;
     long[] update = new long[LENGTH];
     do {
@@ -162,25 +159,17 @@ public class TendonsMonitor implements Monitor {
     } while (!reference.compareAndSet(current, update));
   }
 
+  @Override
   public List<RegisterServiceUrl> lookup(RegisterServiceUrl serviceUrl) {
     return monitorService.lookup(serviceUrl);
-  }
-
-  public RegisterServiceUrl getUrl() {
-    return monitorInvoker.getUrl();
-  }
-
-  public boolean isAvailable() {
-    return monitorInvoker.isAvailable();
   }
 
   public void destroy() {
     try {
       sendFuture.cancel(true);
     } catch (Throwable t) {
-      logger.error("Unexpected error occur at cancel sender timer, cause: " + t.getMessage(), t);
+      LOGGER.error("Unexpected error occur at cancel sender timer, cause: " + t.getMessage(), t);
     }
-    monitorInvoker.destroy();
   }
 
 }
