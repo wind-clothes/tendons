@@ -6,17 +6,17 @@ package org.tendons.registry;
  */
 public abstract class AbstractRegistry implements RegistryCenter {
 
-  @Override
-  public void connection(RegistryCenterConfig centerConfig) {
-    doConnection(centerConfig);
-  }
+    @Override
+    public void connection(RegistryCenterConfig centerConfig) {
+        doConnection(centerConfig);
+    }
 
-  @Override
-  public void close() {
-    doClose();
-  }
+    @Override
+    public void close() {
+        doClose();
+    }
 
-  protected abstract void doConnection(RegistryCenterConfig centerConfig);
+    protected abstract void doConnection(RegistryCenterConfig centerConfig);
 
-  protected abstract void doClose();
+    protected abstract void doClose();
 }

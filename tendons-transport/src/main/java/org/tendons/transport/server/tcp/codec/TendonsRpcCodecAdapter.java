@@ -1,19 +1,30 @@
 package org.tendons.transport.server.tcp.codec;
 
+import org.tendons.common.codec.TendonsRpcCodec;
+import org.tendons.common.server.RpcServer;
+import org.tendons.common.transport.channel.Channel;
+
 /**
  * <pre>
- * TODO
+ * 编解码的适配器
  * </pre>
+ * 
  * @author: chengweixiong@uworks.cc
  * @date: 2017年5月29日 下午4:25:13
  */
 public class TendonsRpcCodecAdapter {
 
-  private final TendonsRpcDecoder rpcDecoder = new TendonsRpcDecoder();
-  private final TendonsRpcEncoder rpcEncoder = new TendonsRpcEncoder();
+  private final TendonsRpcDecoder rpcDecoder;
 
-  public TendonsRpcCodecAdapter() {
-    super();
+  private final TendonsRpcEncoder rpcEncoder;
+
+  private final RpcServer server;
+
+  public TendonsRpcCodecAdapter(TendonsRpcCodec codec, RpcServer server) {
+    this.server = server;
+    final Channel channel = null;
+    this.rpcDecoder = new TendonsRpcDecoder(codec, channel);
+    this.rpcEncoder = new TendonsRpcEncoder(codec, channel);
   }
 
   public TendonsRpcDecoder getRpcDecoder() {

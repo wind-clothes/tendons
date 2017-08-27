@@ -67,6 +67,16 @@ public abstract class AbstractZookeeperClient<TargetChildListener> implements Zo
   }
 
   @Override
+  public byte[] getData(String path) {
+    return findData(path);
+  }
+
+  @Override
+  public void setData(String path, byte[] data) {
+    doData(path, data);;
+  }
+
+  @Override
   public void removeChildListener(String path, ChildListener listener) {
     ConcurrentMap<ChildListener, TargetChildListener> listeners = childListeners.get(path);
     if (listeners != null) {
@@ -108,13 +118,17 @@ public abstract class AbstractZookeeperClient<TargetChildListener> implements Zo
 
   protected abstract void doClose();
 
-  // 创建临时的连接
+  protected abstract void doData(String path, byte[] data);
+
+  protected abstract <T> byte[] findData(String path);
+
+  // 创建临时的路径
   protected abstract void createEphemeral(String path);
 
-  // 创建永久的连接
+  // 创建永久的路径
   protected abstract void createPersistent(String path);
 
-  // 创建一个新的观察者
+  // 创建一个新的子Node观察者
   protected abstract TargetChildListener createTargetChildListener(String path,
       ChildListener listener);
 

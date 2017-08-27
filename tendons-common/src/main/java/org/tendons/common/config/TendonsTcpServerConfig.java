@@ -1,4 +1,4 @@
-package org.tendons.transport.config;
+package org.tendons.common.config;
 
 /**
  * @author: xcw
@@ -37,6 +37,5 @@ public class TendonsTcpServerConfig extends TendonsRpcServerConfig {
   public void setTcpNnodelay(boolean tcpNnodelay) {
     this.tcpNnodelay = tcpNnodelay;
   }
-
 
 }

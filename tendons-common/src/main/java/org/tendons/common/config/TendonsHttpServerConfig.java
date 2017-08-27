@@ -1,4 +1,4 @@
-package org.tendons.transport.config;
+package org.tendons.common.config;
 
 /**
  * @author: xcw

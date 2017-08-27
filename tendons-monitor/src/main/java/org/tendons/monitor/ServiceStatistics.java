@@ -34,13 +34,13 @@ public class ServiceStatistics implements Serializable {
 
   public ServiceStatistics(RegisterServiceUrl serviceUrl) {
     this.serviceUrl = serviceUrl;
-    this.application = serviceUrl.getParameter(MonitorService.APPLICATION);
-    this.service = serviceUrl.getParameter(MonitorService.INTERFACE);
-    this.method = serviceUrl.getParameter(MonitorService.METHOD);
-    this.group = serviceUrl.getParameter(MonitorService.GROUP);
-    this.version = serviceUrl.getParameter(MonitorService.VERSION);
-    this.client = serviceUrl.getParameter(MonitorService.CONSUMER, serviceUrl.getAddress());
-    this.server = serviceUrl.getParameter(MonitorService.PROVIDER, serviceUrl.getAddress());
+    this.application = serviceUrl.getParameter(Contants.APPLICATION);
+    this.service = serviceUrl.getParameter(Contants.INTERFACE);
+    this.method = serviceUrl.getParameter(Contants.METHOD);
+    this.group = serviceUrl.getParameter(Contants.GROUP);
+    this.version = serviceUrl.getParameter(Contants.VERSION);
+    this.client = serviceUrl.getParameter(Contants.CONSUMER, serviceUrl.getAddress());
+    this.server = serviceUrl.getParameter(Contants.PROVIDER, serviceUrl.getAddress());
   }
 
   public RegisterServiceUrl getUrl() {

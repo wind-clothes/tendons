@@ -1,6 +1,4 @@
-package org.tendons.transport.config;
-
-import org.tendons.common.config.RpcTranspotConfig;
+package org.tendons.common.config;
 
 /**
  * @author: chengweixiong@uworks.cc
@@ -20,6 +18,8 @@ public class TendonsRpcServerConfig implements RpcTranspotConfig {
   private final int backlog;
   private final int workerEventLoopsAvailableProcessorsMultiple;
   private final int bossEventLoopsAvailableProcessorsMultiple;
+
+  private String codecName;
 
   public TendonsRpcServerConfig() {
     this(0, 0, 0, 0);
@@ -54,6 +54,14 @@ public class TendonsRpcServerConfig implements RpcTranspotConfig {
 
   public int getBossEventLoopsAvailableProcessorsMultiple() {
     return bossEventLoopsAvailableProcessorsMultiple;
+  }
+
+  public String getCodecName() {
+    return codecName;
+  }
+
+  public void setCodecName(String codecName) {
+    this.codecName = codecName;
   }
 
 }

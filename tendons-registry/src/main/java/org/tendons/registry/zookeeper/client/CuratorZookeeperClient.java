@@ -80,6 +80,32 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
   }
 
   @Override
+  protected void doData(String path, byte[] data) {
+    try {
+      client.setData().forPath(path, data);
+    } catch (Exception e) {
+      LOGGER.warn("set data is error {}", e.getMessage());
+      throw new IllegalStateException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  protected byte[] findData(String path) {
+    try {
+      return client.getData().usingWatcher(new CuratorWatcher() {
+
+        @Override
+        public void process(WatchedEvent event) throws Exception {
+          // TODO I NEED DO EVERYTHING
+        }
+      }).forPath(path);
+    } catch (Exception e) {
+      LOGGER.warn("find data is error {}", e.getMessage());
+      throw new IllegalStateException(e.getMessage(), e);
+    }
+  }
+
+  @Override
   protected void doClose() {
     client.close();
   }
@@ -121,7 +147,7 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 
   @Override
   protected void removeTargetChildListener(String path, CuratorWatcher listener) {
-    ((CuratorWatcherImpl)listener).unwatch();
+    ((CuratorWatcherImpl) listener).unwatch();
   }
 
   @Override
@@ -129,6 +155,12 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
     return client.getZookeeperClient().isConnected();
   }
 
+  /**
+   * 监视器
+   * 
+   * @author: chengweixiong@uworks.cc
+   * @date: 2017年6月10日 下午10:32:42
+   */
   private class CuratorWatcherImpl implements CuratorWatcher {
 
     private volatile ChildListener listener;

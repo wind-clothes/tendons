@@ -15,6 +15,10 @@ public interface ZookeeperClient {
 
   void delete(String path);
 
+  byte[] getData(String path);
+
+  void setData(String path, byte[] data);
+
   List<String> getChildren(String path);
 
   List<String> addChildListener(String path, ChildListener listener);

@@ -16,6 +16,7 @@ import org.tendons.common.service.RegisterServiceUrl;
 import org.tendons.common.util.concurrrent.DefineThreadFactory;
 import org.tendons.monitor.Monitor;
 import org.tendons.monitor.MonitorService;
+import org.tendons.monitor.Contants;
 import org.tendons.monitor.ServiceStatistics;
 
 /**
@@ -78,14 +79,15 @@ public class TendonsMonitor implements Monitor {
       long maxConcurrent = numbers[9];
 
       // 发送汇总信息
-      final RegisterServiceUrl url = statistics.getUrl().addParameters(MonitorService.TIMESTAMP,
-          timestamp, MonitorService.SUCCESS, String.valueOf(success), MonitorService.FAILURE,
-          String.valueOf(failure), MonitorService.INPUT, String.valueOf(input),
-          MonitorService.OUTPUT, String.valueOf(output), MonitorService.ELAPSED,
-          String.valueOf(elapsed), MonitorService.CONCURRENT, String.valueOf(concurrent),
-          MonitorService.MAX_INPUT, String.valueOf(maxInput), MonitorService.MAX_OUTPUT,
-          String.valueOf(maxOutput), MonitorService.MAX_ELAPSED, String.valueOf(maxElapsed),
-          MonitorService.MAX_CONCURRENT, String.valueOf(maxConcurrent));
+      final RegisterServiceUrl url = statistics.getUrl().addParameters(Contants.TIMESTAMP,
+          timestamp, Contants.SUCCESS, String.valueOf(success), Contants.FAILURE,
+          String.valueOf(failure), Contants.INPUT, String.valueOf(input),
+          Contants.OUTPUT, String.valueOf(output), Contants.ELAPSED,
+          String.valueOf(elapsed), Contants.CONCURRENT, String.valueOf(concurrent),
+          Contants.MAX_INPUT, String.valueOf(maxInput), Contants.MAX_OUTPUT,
+          String.valueOf(maxOutput), Contants.MAX_ELAPSED, String.valueOf(maxElapsed),
+          Contants.MAX_CONCURRENT, String.valueOf(maxConcurrent));
+      // 将性能指数通过RPC服务发送到指定的服务中去
       monitorService.collect(url);
 
       // 减掉已统计数据
@@ -115,12 +117,12 @@ public class TendonsMonitor implements Monitor {
   @Override
   public void collect(RegisterServiceUrl serviceUrl) {
     // 读写统计变量
-    int success = serviceUrl.getParameter(MonitorService.SUCCESS, 0);
-    int failure = serviceUrl.getParameter(MonitorService.FAILURE, 0);
-    int input = serviceUrl.getParameter(MonitorService.INPUT, 0);
-    int output = serviceUrl.getParameter(MonitorService.OUTPUT, 0);
-    int elapsed = serviceUrl.getParameter(MonitorService.ELAPSED, 0);
-    int concurrent = serviceUrl.getParameter(MonitorService.CONCURRENT, 0);
+    int success = serviceUrl.getParameter(Contants.SUCCESS, 0);
+    int failure = serviceUrl.getParameter(Contants.FAILURE, 0);
+    int input = serviceUrl.getParameter(Contants.INPUT, 0);
+    int output = serviceUrl.getParameter(Contants.OUTPUT, 0);
+    int elapsed = serviceUrl.getParameter(Contants.ELAPSED, 0);
+    int concurrent = serviceUrl.getParameter(Contants.CONCURRENT, 0);
     // 初始化原子引用
     ServiceStatistics statistics = new ServiceStatistics(serviceUrl);
     AtomicReference<long[]> reference = statisticsMap.get(statistics);

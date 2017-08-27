@@ -1,9 +1,5 @@
 package org.tendons.common.server;
 
-import java.util.List;
-
-import org.tendons.common.service.ServiceWrapper;
-
 /**
  * @author: chengweixiong@uworks.cc
  * @date: 2017年5月10日 下午11:04:09
@@ -14,14 +10,14 @@ public interface RpcServer {
    * 
    * @return void
    */
-  void start() throws Exception;
+  void start() throws Throwable;
 
   /**
    * 停止服务
    * 
    * @return void
    */
-  void stop();
+  void stop() throws Throwable;
 
 /*  *//**
    * 发布本地所有服务到注册中心.

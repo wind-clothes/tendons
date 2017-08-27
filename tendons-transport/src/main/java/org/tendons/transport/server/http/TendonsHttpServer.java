@@ -4,8 +4,8 @@ import java.net.InetAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tendons.common.config.TendonsHttpServerConfig;
 import org.tendons.common.server.RpcServer;
-import org.tendons.transport.config.TendonsHttpServerConfig;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;

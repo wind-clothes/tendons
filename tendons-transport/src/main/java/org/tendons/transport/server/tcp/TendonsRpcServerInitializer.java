@@ -15,14 +15,19 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class TendonsRpcServerInitializer extends ChannelInitializer<SocketChannel>
     implements RpcTransportInitializer {
 
-  @Override
-  protected void initChannel(SocketChannel ch) throws Exception {
-    final ChannelPipeline pipeline = ch.pipeline();
-    final TendonsRpcCodecAdapter codecAdapter = new TendonsRpcCodecAdapter();
-    pipeline.addLast("rpc-timeout", new IdleStateHandler(0, 0, 1000));
-    pipeline.addLast("rpc-codecAdapter-decoder", codecAdapter.getRpcDecoder());
-    pipeline.addLast("rpc-codecAdapter-encoder", codecAdapter.getRpcEncoder());
-    pipeline.addLast("tendonsRpcServerHandler", new TendonsRpcServerHandler());
-  }
+    private final TendonsRpcCodecAdapter codecAdapter;
+
+    public TendonsRpcServerInitializer(TendonsRpcCodecAdapter codecAdapter) {
+        this.codecAdapter = codecAdapter;
+    }
+
+    @Override
+    protected void initChannel(SocketChannel ch) throws Exception {
+        final ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast("rpc-timeout", new IdleStateHandler(0, 0, 1000));
+        pipeline.addLast("rpc-codecAdapter-decoder", codecAdapter.getRpcDecoder());
+        pipeline.addLast("rpc-codecAdapter-encoder", codecAdapter.getRpcEncoder());
+        pipeline.addLast("tendonsRpcServerHandler", new TendonsRpcServerHandler());
+    }
 
 }

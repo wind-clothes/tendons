@@ -8,7 +8,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * <pre>
- * tcp请求处理器 TODO
+ * tcp请求处理器
  * </pre>
  * 
  * @author: xcw
@@ -17,6 +17,12 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class TendonsRpcServerHandler extends SimpleChannelInboundHandler<Object> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TendonsRpcServerHandler.class);
+
+  private final NettyChannelManager manager = null;
+
+  TendonsRpcServerHandler() {
+
+  }
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
